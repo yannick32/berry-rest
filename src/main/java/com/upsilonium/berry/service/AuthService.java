@@ -1,8 +1,14 @@
 package com.upsilonium.berry.service;
 
+import com.upsilonium.berry.dto.LoginRequest;
 import com.upsilonium.berry.dto.RegisterRequest;
 import com.upsilonium.berry.model.User;
 import com.upsilonium.berry.repository.UserRepository;
+import com.upsilonium.berry.security.JwtProvider;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +20,15 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
 
-    public AuthService(UserRepository userRepo, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepo, PasswordEncoder passwordEncoder,
+                       AuthenticationManager authenticationManager, JwtProvider jwtProvider) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtProvider = jwtProvider;
     }
 
     public void signUp(RegisterRequest registerRequest) {
@@ -27,6 +38,15 @@ public class AuthService {
         user.setEmail(registerRequest.getEmail());
 
         userRepo.save(user);
+    }
+
+    public String login(LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginRequest.getUsername(),
+                loginRequest.getPassword()
+        ));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return jwtProvider.generateToken(authentication);
     }
 
     private String encodePassword(String password) {

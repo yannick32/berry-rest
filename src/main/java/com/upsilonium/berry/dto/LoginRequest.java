@@ -9,6 +9,5 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class RegisterRequest extends UserRequest {
-    private String email;
+public class LoginRequest extends UserRequest {
 }

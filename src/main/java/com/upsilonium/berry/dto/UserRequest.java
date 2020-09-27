@@ -9,6 +9,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class RegisterRequest extends UserRequest {
-    private String email;
+public abstract class UserRequest {
+    private String username;
+    private String password;
 }
