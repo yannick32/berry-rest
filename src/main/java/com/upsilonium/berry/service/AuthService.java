@@ -3,6 +3,7 @@ package com.upsilonium.berry.service;
 import com.upsilonium.berry.dto.RegisterRequest;
 import com.upsilonium.berry.model.User;
 import com.upsilonium.berry.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,18 +12,24 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class AuthService {
-    private UserRepository userRepo;
+    private final UserRepository userRepo;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthService(UserRepository userRepo) {
+    public AuthService(UserRepository userRepo, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void signUp(RegisterRequest registerRequest) {
         User user = new User();
         user.setUsername(registerRequest.getUsername());
-        user.setPassword(registerRequest.getPassword());
+        user.setPassword(encodePassword(registerRequest.getPassword()));
         user.setEmail(registerRequest.getEmail());
 
         userRepo.save(user);
+    }
+
+    private String encodePassword(String password) {
+        return passwordEncoder.encode(password);
     }
 }
