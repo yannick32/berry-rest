@@ -4,17 +4,16 @@ import com.upsilonium.berry.dto.PostDto;
 import com.upsilonium.berry.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Yannick Van Ham
  * created on Sunday, 27/09/2020
  */
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/api/auth/posts")
 public class PostController {
     private final PostService postService;
 
@@ -26,5 +25,15 @@ public class PostController {
     public ResponseEntity<String> createPost(@RequestBody PostDto postDto){
         postService.createPost(postDto);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<PostDto>> showAllPosts() {
+        return new ResponseEntity<>(postService.showAllPosts(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PostDto> showPostWithId(@PathVariable("id") @RequestBody Long id) {
+        return new ResponseEntity<>(postService.findById(id), HttpStatus.OK);
     }
 }
