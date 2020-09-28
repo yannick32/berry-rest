@@ -1,4 +1,4 @@
-package com.upsilonium.berry.dto;
+package com.upsilonium.berry.dto.post;
 
 import lombok.Getter;
 import lombok.Setter;

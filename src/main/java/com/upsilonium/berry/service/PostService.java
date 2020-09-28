@@ -2,11 +2,10 @@ package com.upsilonium.berry.service;
 
 import com.upsilonium.berry.converter.DtoToPost;
 import com.upsilonium.berry.converter.PostToDto;
-import com.upsilonium.berry.dto.PostDto;
+import com.upsilonium.berry.dto.post.PostDto;
 import com.upsilonium.berry.exception.PostNotFoundException;
 import com.upsilonium.berry.model.Post;
 import com.upsilonium.berry.repository.PostRepository;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

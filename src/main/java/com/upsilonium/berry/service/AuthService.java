@@ -1,7 +1,7 @@
 package com.upsilonium.berry.service;
 
-import com.upsilonium.berry.dto.LoginRequest;
-import com.upsilonium.berry.dto.RegisterRequest;
+import com.upsilonium.berry.dto.user.LoginRequest;
+import com.upsilonium.berry.dto.user.RegisterRequest;
 import com.upsilonium.berry.model.User;
 import com.upsilonium.berry.repository.UserRepository;
 import com.upsilonium.berry.security.JwtProvider;
@@ -42,13 +42,12 @@ public class AuthService {
         userRepo.save(user);
     }
 
-    public String login(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginRequest.getUsername(),
-                loginRequest.getPassword()
-        ));
+    public AuthenticationResponse login(LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
+                loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return jwtProvider.generateToken(authentication);
+        String authenticationToken = jwtProvider.generateToken(authentication);
+        return new AuthenticationResponse(authenticationToken, loginRequest.getUsername());
     }
 
     public Optional<org.springframework.security.core.userdetails.User> getCurrentUser() {

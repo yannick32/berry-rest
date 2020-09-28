@@ -1,4 +1,4 @@
-package com.upsilonium.berry.dto;
+package com.upsilonium.berry.dto.user;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +9,5 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public abstract class UserRequest {
-    private String username;
-    private String password;
+public class LoginRequest extends UserRequest {
 }

@@ -1,6 +1,6 @@
 package com.upsilonium.berry.converter;
 
-import com.upsilonium.berry.dto.PostDto;
+import com.upsilonium.berry.dto.post.PostDto;
 import com.upsilonium.berry.model.Post;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;

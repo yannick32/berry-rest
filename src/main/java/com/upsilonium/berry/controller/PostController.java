@@ -1,6 +1,6 @@
 package com.upsilonium.berry.controller;
 
-import com.upsilonium.berry.dto.PostDto;
+import com.upsilonium.berry.dto.post.PostDto;
 import com.upsilonium.berry.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

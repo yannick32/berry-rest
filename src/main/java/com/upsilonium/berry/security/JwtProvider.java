@@ -8,7 +8,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.security.Key;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.*;
+import java.security.cert.CertificateException;
 
 /**
  * @author Yannick Van Ham
@@ -16,36 +19,61 @@ import java.security.Key;
  */
 @Service
 public class JwtProvider {
-    private Key key;
+    private KeyStore keyStore;
 
     @PostConstruct
     public void init(){
-        key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        try {
+            keyStore = KeyStore.getInstance("JKS");
+            InputStream resourceAsStream = getClass().getResourceAsStream("/berry.jks");
+            keyStore.load(resourceAsStream, "P@ssw0rd".toCharArray());
+        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException e) {
+            e.printStackTrace();
+        }
     }
 
     public String generateToken(Authentication authentication){
         return Jwts.builder()
                 .setSubject(authentication.getName())
-                .signWith(key)
+                .signWith(getPrivateKey())
                 .compact();
     }
 
+    public String getUsernameFromJwt(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getPublicKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        
+        return claims.getSubject();
+    }
+
+
     boolean validateToken(String jwt){
         Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(getPublicKey())
                 .build()
                 .parseClaimsJws(jwt);
         return true;
 
     }
 
-    public String getUsernameFromJwt(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-        
-        return claims.getSubject();
+    private PrivateKey getPrivateKey() {
+        try {
+            return (PrivateKey) keyStore.getKey("berry", "P@ssw0rd".toCharArray());
+        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {
+            e.printStackTrace();
+        }
+        throw new RuntimeException("Exception was thrown while retrieving private key");
+    }
+
+    private PublicKey getPublicKey() {
+        try {
+            return keyStore.getCertificate("berry").getPublicKey();
+        } catch (KeyStoreException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Exception was thrown while retrieving private key");
+        }
     }
 }

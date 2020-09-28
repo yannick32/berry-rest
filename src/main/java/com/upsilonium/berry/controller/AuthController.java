@@ -1,8 +1,9 @@
 package com.upsilonium.berry.controller;
 
-import com.upsilonium.berry.dto.LoginRequest;
-import com.upsilonium.berry.dto.RegisterRequest;
+import com.upsilonium.berry.dto.user.LoginRequest;
+import com.upsilonium.berry.dto.user.RegisterRequest;
 import com.upsilonium.berry.service.AuthService;
+import com.upsilonium.berry.service.AuthenticationResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest loginRequest){
+    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest){
         return authService.login(loginRequest);
     }
 }
