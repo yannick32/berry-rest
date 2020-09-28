@@ -29,7 +29,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
+        http.csrf().disable()
+                .cors().and()
                 .authorizeRequests()
                 .antMatchers("/api/auth/**")
                 .permitAll()
@@ -38,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
-    public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder){
+    public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) {
         try {
             authenticationManagerBuilder.userDetailsService(userDetailsService)
                     .passwordEncoder(passwordEncoder());
@@ -49,12 +50,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception{
+    public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
     @Bean
-    PasswordEncoder passwordEncoder(){
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
