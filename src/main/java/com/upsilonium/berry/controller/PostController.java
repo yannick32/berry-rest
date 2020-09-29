@@ -13,7 +13,7 @@ import java.util.List;
  * created on Sunday, 27/09/2020
  */
 @RestController
-@RequestMapping("/api/auth/posts")
+@RequestMapping("/api/posts")
 public class PostController {
     private final PostService postService;
 
